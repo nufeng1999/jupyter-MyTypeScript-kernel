@@ -1226,16 +1226,6 @@ class MyTypeScriptKernel(MyKernel):
         outfile=binary_filename
         orig_cflags=cflags
         orig_ldflags=ldflags
-        # if self.linkMaths:
-        #     cflags = cflags + ['-lm']
-        # if self.wError:
-        #     cflags = cflags + ['-Werror']
-        # if self.wAll:
-        #     cflags = cflags + ['-Wall']
-        # if self.readOnlyFileSystem:
-        #     cflags = ['-DREAD_ONLY_FILE_SYSTEM'] + cflags
-        # if self.bufferedOutput:
-        #     cflags = ['-DBUFFERED_OUTPUT'] + cflags
         index=0
         for s in cflags:
             if s.startswith('--outFile'):
@@ -1244,7 +1234,7 @@ class MyTypeScriptKernel(MyKernel):
                     del cflags[index]
                 else:
                     outfile=cflags[cflags.index('--outFile')+1]
-                    if not outfile.startswith('-'):
+                    if outfile.startswith('-'):
                         outfile=binary_filename
                     del cflags[cflags.index('--outFile')+1]
                     del cflags[cflags.index('--outFile')]
@@ -1257,7 +1247,7 @@ class MyTypeScriptKernel(MyKernel):
             tsccmd=['tsc']
             if self.sys=="Windows":
                 tsccmd=['cmd','/c','tsc']
-            args = tsccmd+[source_filename] + ['-outFile', binary_filename]+ cflags  + ldflags
+            args = tsccmd+[source_filename] + ['--outFile', binary_filename]+ cflags  + ldflags
         # self._log(''.join((' '+ str(s) for s in args))+"\n")
         return self.create_jupyter_subprocess(args,env=env),binary_filename,args
     def _exec_tsc_(self,source_filename,magics):
