@@ -1261,7 +1261,7 @@ class MyTypeScriptKernel(MyKernel):
     implementation = 'jupyter-MyTypeScript-kernel'
     implementation_version = '1.0'
     language = 'typescript'
-    language_version = sys.version.split()[0]
+    language_version = ''
     language_info = {'name': 'typescript',
                      'version': sys.version.split()[0],
                      'mimetype': 'text/typescript',
