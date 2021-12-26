@@ -1329,13 +1329,12 @@ class MyTypeScriptKernel(MyKernel):
                 self.get_magicsSvalue(magics,'ldflags'),
                 self.get_magicsbykey(magics,'env'),
                 magics=magics)
-            while p.poll() is None:
-                p.write_contents()
+            returncode=p.wait_end(magics)
             p.write_contents()
             binary_file.name=os.path.join(os.path.abspath(''),outfile)
-            if p.returncode != 0:  # Compilation failed
-                self._log(''.join((str(s) for s in tsccmd))+"\n",3)
-                self._log("TSC compiler exited with code {}, the executable will not be executed".format(p.returncode),3)
+            if returncode != 0:  # Compilation failed
+                self._logln(' '.join((str(s) for s in tsccmd))+"\n",3)
+                self._logln("TSC compiler exited with code {}, the executable will not be executed".format(returncode),3)
                 # delete source files before exit
                 os.remove(source_filename)
                 os.remove(binary_file.name)
