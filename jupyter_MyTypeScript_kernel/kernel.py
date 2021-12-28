@@ -778,9 +778,12 @@ echo "OK"
         return
     def create_jupyter_subprocess(self, cmd,cwd=None,shell=False,env=None,magics=None,outencode=None):
         try:
-            if env==None or len(env)<1:
-                env=os.environ
-            if magics!=None and len(self.addmagicsBkey(magics,'runinterm'))>0:
+            if env==None or len(env)<1:env=os.environ
+            
+            newcwd=self.get_magicsSvalue(magics,'cwd')
+            if len(newcwd.strip())>1:cwd=newcwd
+            if cwd==None:cwd=os.path.abspath('')
+            if magics!=None and magics['status']=='' and len(self.addmagicsBkey(magics,'runinterm'))>0:
                 self.inittermcmd(magics)
                 if len(magics['_st']['term'])<1:
                     self._logln("no term！",2)
@@ -1322,6 +1325,7 @@ class MyTypeScriptKernel(MyKernel):
     def _exec_tsc_(self,source_filename,magics):
         self._logln('Generating executable file')
         with self.new_temp_file(suffix='.js') as binary_file:
+            magics['status']='compiling'
             p,outfile,tsccmd = self.compile_with_tsc(
                 source_filename, 
                 binary_file.name,
@@ -1331,6 +1335,7 @@ class MyTypeScriptKernel(MyKernel):
                 magics=magics)
             returncode=p.wait_end(magics)
             p.write_contents()
+            magics['status']=''
             binary_file.name=os.path.join(os.path.abspath(''),outfile)
             if returncode != 0:  # Compilation failed
                 self._logln(' '.join((str(s) for s in tsccmd))+"\n",3)
