@@ -108,7 +108,7 @@ class MyTypeScriptKernel(MyKernel):
             args = magics['ccompiler'] + orig_cflags +[source_filename] + orig_ldflags
         else:
             tsccmd=['tsc']
-            if self.sys=="Windows":
+            if self.mymagics.sys=="Windows":
                 tsccmd=['cmd','/c','tsc']
             args = tsccmd+[source_filename] + ['--outFile', binary_filename]+ cflags  + ldflags
         # self._log(''.join((' '+ str(s) for s in args))+"\n")
